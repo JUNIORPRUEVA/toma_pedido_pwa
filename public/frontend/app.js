@@ -6,16 +6,16 @@ const cantidadInput = document.getElementById('cantidadInput');
 const addBtn        = document.getElementById('addBtn');
 const listaDiv      = document.getElementById('lista');
 
-// Opcionales (si están en el HTML)
+// inputs de archivo + previews
 const imagenInput = document.getElementById('imagenInput');
 const videoInput  = document.getElementById('videoInput');
 const imgPreview  = document.getElementById('imgPreview');
 const vidPreview  = document.getElementById('vidPreview');
 
-// Estado de edición: si es null se crea, si tiene ID se actualiza
+// Estado de edición
 let editId = null;
 
-// ======== Previews rápidos (si existen inputs de archivo) ========
+// ======== Previews ========
 if (imagenInput && imgPreview) {
   imagenInput.addEventListener('change', () => {
     imgPreview.innerHTML = '';
@@ -41,7 +41,7 @@ if (videoInput && vidPreview) {
   });
 }
 
-// ======== Cargar lista al iniciar ========
+// ======== Inicio ========
 window.addEventListener('DOMContentLoaded', cargarLista);
 
 addBtn.addEventListener('click', () => {
@@ -52,7 +52,6 @@ addBtn.addEventListener('click', () => {
     alert('Por favor, introduce un nombre de producto y una cantidad válida');
     return;
   }
-
   if (editId) {
     actualizarProducto(editId, producto, cantidad);
   } else {
@@ -83,11 +82,11 @@ function mostrarLista(items) {
     const div = document.createElement('div');
     div.className = 'item';
 
-    const title = document.createElement('span');
-    title.textContent = `${item.producto} (Cantidad: ${item.cantidad})`;
-    div.appendChild(title);
+    const span = document.createElement('span');
+    span.textContent = `${item.producto} (Cantidad: ${item.cantidad})`;
+    div.appendChild(span);
 
-    // Medios (si existen)
+    // medios
     const media = document.createElement('div');
     media.className = 'item-media';
     if (item.imagen) {
@@ -110,9 +109,10 @@ function mostrarLista(items) {
     }
     if (media.children.length) div.appendChild(media);
 
-    // Botones
+    // botones
     const editButton = document.createElement('button');
     editButton.textContent = 'Editar';
+    editButton.className = 'edit';
     editButton.addEventListener('click', () => prepararEdicion(item));
     div.appendChild(editButton);
 
@@ -130,8 +130,9 @@ function prepararEdicion(item) {
   editId = item.id;
   productoInput.value = item.producto;
   cantidadInput.value = item.cantidad;
+  addBtn.textContent = 'Actualizar';
 
-  // No podemos pre-cargar archivos en inputs por seguridad del navegador.
+  // limpiar inputs de archivo (por seguridad no se pueden pre-cargar)
   if (imagenInput) {
     imagenInput.value = '';
     if (imgPreview) imgPreview.innerHTML = '';
@@ -140,8 +141,6 @@ function prepararEdicion(item) {
     videoInput.value = '';
     if (vidPreview) vidPreview.innerHTML = '';
   }
-
-  addBtn.textContent = 'Actualizar';
 }
 
 async function crearProducto(producto, cantidad) {
@@ -149,18 +148,10 @@ async function crearProducto(producto, cantidad) {
     const fd = new FormData();
     fd.append('producto', producto);
     fd.append('cantidad', String(cantidad));
+    if (imagenInput?.files?.[0]) fd.append('imagen', imagenInput.files[0]);
+    if (videoInput?.files?.[0])  fd.append('video',  videoInput.files[0]);
 
-    if (imagenInput && imagenInput.files && imagenInput.files[0]) {
-      fd.append('imagen', imagenInput.files[0]);
-    }
-    if (videoInput && videoInput.files && videoInput.files[0]) {
-      fd.append('video', videoInput.files[0]);
-    }
-
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      body: fd, // NO pongas Content-Type
-    });
+    const response = await fetch(API_URL, { method: 'POST', body: fd });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
       throw new Error(err.error || 'Error al crear producto');
@@ -170,9 +161,9 @@ async function crearProducto(producto, cantidad) {
     productoInput.value = '';
     cantidadInput.value = '';
     if (imagenInput) imagenInput.value = '';
-    if (videoInput) videoInput.value = '';
-    if (imgPreview) imgPreview.innerHTML = '';
-    if (vidPreview) vidPreview.innerHTML = '';
+    if (videoInput)  videoInput.value  = '';
+    if (imgPreview)  imgPreview.innerHTML = '';
+    if (vidPreview)  vidPreview.innerHTML = '';
 
     cargarLista();
   } catch (err) {
@@ -186,33 +177,24 @@ async function actualizarProducto(id, producto, cantidad) {
     const fd = new FormData();
     fd.append('producto', producto);
     fd.append('cantidad', String(cantidad));
+    // solo se envían archivos si el usuario seleccionó nuevos
+    if (imagenInput?.files?.[0]) fd.append('imagen', imagenInput.files[0]);
+    if (videoInput?.files?.[0])  fd.append('video',  videoInput.files[0]);
 
-    // Si el usuario seleccionó nuevos archivos, los enviamos. Si no, el backend mantiene los anteriores.
-    if (imagenInput && imagenInput.files && imagenInput.files[0]) {
-      fd.append('imagen', imagenInput.files[0]);
-    }
-    if (videoInput && videoInput.files && videoInput.files[0]) {
-      fd.append('video', videoInput.files[0]);
-    }
-
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      body: fd, // NO pongas Content-Type
-    });
+    const response = await fetch(`${API_URL}/${id}`, { method: 'PUT', body: fd });
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
       throw new Error(err.error || 'Error al actualizar producto');
     }
 
-    // Restablecer edición
     editId = null;
     addBtn.textContent = 'Añadir';
     productoInput.value = '';
     cantidadInput.value = '';
     if (imagenInput) imagenInput.value = '';
-    if (videoInput) videoInput.value = '';
-    if (imgPreview) imgPreview.innerHTML = '';
-    if (vidPreview) vidPreview.innerHTML = '';
+    if (videoInput)  videoInput.value  = '';
+    if (imgPreview)  imgPreview.innerHTML = '';
+    if (vidPreview)  vidPreview.innerHTML = '';
 
     cargarLista();
   } catch (err) {

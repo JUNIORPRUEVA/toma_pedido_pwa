@@ -7,21 +7,22 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#0a1931" />
+
+    <!-- Estilos rápidos para previews y botones -->
     <style>
-      /* extras sutiles para el preview */
       .file-row { display: grid; gap: 8px; margin-top: 8px; }
       .previews { display: flex; gap: 12px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
       .previews img { max-width: 120px; max-height: 120px; border-radius: 8px; }
       .previews video { max-width: 200px; max-height: 140px; border-radius: 8px; }
-      .list-item { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin: 8px 0; }
+      .item { background: rgba(255,255,255,.05); padding: 10px; border-radius: 10px; margin: 8px 0; }
       .item-media { margin-top: 8px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-      .actions { margin-top: 8px; display: flex; gap: 8px; }
-      .actions button { padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; }
-      .actions .danger { background:#ef4444; color:#fff; }
-      .actions .ghost { background:#1f2937; color:#fff; border:1px solid #374151; }
+      .item button { padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; }
+      .item .delete { background:#ef4444; color:#fff; }
+      .item .edit { background:#2563eb; color:#fff; }
       .hint { font-size: 12px; opacity: .8; }
     </style>
   </head>
+
   <body>
     <div class="container">
       <div class="card">
