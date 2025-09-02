@@ -30,20 +30,40 @@ if (videoInput) {
 // ======== Inicio ========
 window.addEventListener('DOMContentLoaded', cargarLista);
 
-addBtn.addEventListener('click', () => {
-  const producto = productoInput.value.trim();
-  const cantidad = parseInt(cantidadInput.value, 10);
+addBtn.onclick = async function () {
+  const nombre = productoInput.value.trim();
+  const cantidad = cantidadInput.value;
+  const imagen = imagenInput.files[0];
+  const video = videoInput.files[0];
 
-  if (!producto || isNaN(cantidad) || cantidad <= 0) {
-    alert('Por favor, introduce un nombre de producto y una cantidad válida');
-    return;
+  if (!nombre || !cantidad) return;
+
+  const formData = new FormData();
+  formData.append('producto', nombre);
+  formData.append('cantidad', cantidad);
+  if (imagen) formData.append('imagen', imagen);
+  if (video) formData.append('video', video);
+
+  try {
+    const res = await fetch('/api/productos', {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) throw new Error('Error al guardar');
+    const nuevo = await res.json();
+    // Actualiza la lista con el nuevo producto
+    productos.push(nuevo);
+    renderLista();
+    productoInput.value = '';
+    cantidadInput.value = '';
+    imagenInput.value = '';
+    videoInput.value = '';
+    document.getElementById('imgPreview').innerHTML = '';
+    document.getElementById('vidPreview').innerHTML = '';
+  } catch (err) {
+    alert('No se pudo guardar el producto');
   }
-  if (editId) {
-    actualizarProducto(editId, producto, cantidad);
-  } else {
-    crearProducto(producto, cantidad);
-  }
-});
+};
 
 // ======== CRUD ========
 async function cargarLista() {
@@ -75,18 +95,18 @@ function mostrarLista(items) {
     // medios
     const media = document.createElement('div');
     media.className = 'item-media';
-    if (item.imagen) {
+    if (item.imagen_url) {
       const img = document.createElement('img');
-      img.src = item.imagen;
+      img.src = item.imagen_url;
       img.alt = 'img';
       img.style.maxWidth = '120px';
       img.style.maxHeight = '120px';
       img.style.borderRadius = '8px';
       media.appendChild(img);
     }
-    if (item.video) {
+    if (item.video_url) {
       const vid = document.createElement('video');
-      vid.src = item.video;
+      vid.src = item.video_url;
       vid.controls = true;
       vid.style.maxWidth = '200px';
       vid.style.maxHeight = '140px';
