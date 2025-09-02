@@ -1,12 +1,12 @@
 const CACHE_NAME = 'toma-pedido-cache-v5';
 const URLS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/frontend/',
+  '/frontend/index.html',
+  '/frontend/styles.css',
+  '/frontend/app.js',
+  '/frontend/manifest.json',
+  '/frontend/icons/icon-192.png',
+  '/frontend/icons/icon-512.png'
 ];
 
 // Instalación: almacenar archivos en caché
@@ -21,7 +21,19 @@ self.addEventListener('install', (event) => {
 // Activación: limpieza de cachés antiguos si existen
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((cacheNames) => {    const express = require('express');
+    const app = express();
+    const path = require('path');
+    
+    // Cambia 'public' por 'public/frontend' si tu index.html está ahí
+    app.use(express.static(path.join(__dirname, 'public', 'frontend')));
+    
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, 'public', 'frontend', 'index.html'));
+    });
+    
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
