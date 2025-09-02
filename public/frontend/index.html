@@ -1,4 +1,4 @@
-index.html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +7,20 @@ index.html<!DOCTYPE html>
     <link rel="stylesheet" href="styles.css" />
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#0a1931" />
+    <style>
+      /* extras sutiles para el preview */
+      .file-row { display: grid; gap: 8px; margin-top: 8px; }
+      .previews { display: flex; gap: 12px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+      .previews img { max-width: 120px; max-height: 120px; border-radius: 8px; }
+      .previews video { max-width: 200px; max-height: 140px; border-radius: 8px; }
+      .list-item { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin: 8px 0; }
+      .item-media { margin-top: 8px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      .actions { margin-top: 8px; display: flex; gap: 8px; }
+      .actions button { padding: 6px 10px; border-radius: 8px; border: none; cursor: pointer; }
+      .actions .danger { background:#ef4444; color:#fff; }
+      .actions .ghost { background:#1f2937; color:#fff; border:1px solid #374151; }
+      .hint { font-size: 12px; opacity: .8; }
+    </style>
   </head>
   <body>
     <div class="container">
@@ -14,27 +28,42 @@ index.html<!DOCTYPE html>
         <div class="header">
           <h1>Lista de Compras</h1>
         </div>
+
+        <!-- Formulario -->
         <div class="form">
           <input type="text" id="productoInput" placeholder="Producto..." />
           <input type="number" id="cantidadInput" placeholder="Cantidad" min="1" />
+
+          <div class="file-row">
+            <label class="hint">Imagen (opcional)</label>
+            <input type="file" id="imagenInput" accept="image/*" />
+            <div class="previews" id="imgPreview"></div>
+          </div>
+
+          <div class="file-row">
+            <label class="hint">Video (opcional)</label>
+            <input type="file" id="videoInput" accept="video/*" />
+            <div class="previews" id="vidPreview"></div>
+          </div>
+
           <button id="addBtn">Añadir</button>
         </div>
+
+        <!-- Lista -->
         <div class="list" id="lista"></div>
       </div>
     </div>
+
     <script src="app.js"></script>
+
+    <!-- Service Worker (PWA) -->
     <script>
-      // Registro del Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker
             .register('/sw.js')
-            .then((reg) => {
-              console.log('Service Worker registrado con éxito', reg);
-            })
-            .catch((err) => {
-              console.warn('Error al registrar el Service Worker', err);
-            });
+            .then((reg) => console.log('SW OK', reg))
+            .catch((err) => console.warn('SW FAIL', err));
         });
       }
     </script>
