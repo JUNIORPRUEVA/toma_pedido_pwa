@@ -1,0 +1,109 @@
+/* Estilos generales */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #0a1931;
+  color: #ffffff;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+}
+
+.card {
+  background-color: #101f42;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form input[type='number'] {
+  max-width: 120px;
+}
+
+.form button {
+  background-color: #1768ac;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.form button:hover {
+  background-color: #124c7c;
+}
+
+.list {
+  margin-top: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #152859;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+
+.item span {
+  flex: 1;
+}
+
+.item button {
+  margin-left: 5px;
+  background-color: #1768ac;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.item button.delete {
+  background-color: #c0392b;
+}
+
+.item button.delete:hover {
+  background-color: #96281b;
+}
