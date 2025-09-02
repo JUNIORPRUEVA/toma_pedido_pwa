@@ -1,43 +1,29 @@
 // Si el frontend se sirve del mismo host, usa ruta relativa:
 const API_URL = '/api/productos';
 
+const lista = document.getElementById('lista');
+const addBtn = document.getElementById('addBtn');
 const productoInput = document.getElementById('productoInput');
 const cantidadInput = document.getElementById('cantidadInput');
-const addBtn        = document.getElementById('addBtn');
-const listaDiv      = document.getElementById('lista');
-
-// inputs de archivo + previews
 const imagenInput = document.getElementById('imagenInput');
-const videoInput  = document.getElementById('videoInput');
-const imgPreview  = document.getElementById('imgPreview');
-const vidPreview  = document.getElementById('vidPreview');
+const videoInput = document.getElementById('videoInput');
 
-// Estado de edición
-let editId = null;
+let productos = [];
 
 // ======== Previews ========
-if (imagenInput && imgPreview) {
+if (imagenInput) {
   imagenInput.addEventListener('change', () => {
-    imgPreview.innerHTML = '';
-    const f = imagenInput.files?.[0];
-    if (!f) return;
-    const url = URL.createObjectURL(f);
-    const img = document.createElement('img');
-    img.src = url;
-    imgPreview.appendChild(img);
+    const file = imagenInput.files[0];
+    const preview = document.getElementById('imgPreview');
+    preview.innerHTML = file ? `<img src="${URL.createObjectURL(file)}">` : '';
   });
 }
 
-if (videoInput && vidPreview) {
+if (videoInput) {
   videoInput.addEventListener('change', () => {
-    vidPreview.innerHTML = '';
-    const f = videoInput.files?.[0];
-    if (!f) return;
-    const url = URL.createObjectURL(f);
-    const v = document.createElement('video');
-    v.src = url;
-    v.controls = true;
-    vidPreview.appendChild(v);
+    const file = videoInput.files[0];
+    const preview = document.getElementById('vidPreview');
+    preview.innerHTML = file ? `<video src="${URL.createObjectURL(file)}" controls></video>` : '';
   });
 }
 
@@ -67,14 +53,14 @@ async function cargarLista() {
     mostrarLista(data);
   } catch (err) {
     console.error('Error al cargar lista:', err);
-    listaDiv.innerHTML = '<p>Error al cargar la lista</p>';
+    lista.innerHTML = '<p>Error al cargar la lista</p>';
   }
 }
 
 function mostrarLista(items) {
-  listaDiv.innerHTML = '';
+  lista.innerHTML = '';
   if (!items || items.length === 0) {
-    listaDiv.innerHTML = '<p>No hay productos</p>';
+    lista.innerHTML = '<p>No hay productos</p>';
     return;
   }
 
@@ -122,7 +108,7 @@ function mostrarLista(items) {
     deleteButton.addEventListener('click', () => eliminarProducto(item.id));
     div.appendChild(deleteButton);
 
-    listaDiv.appendChild(div);
+    lista.appendChild(div);
   });
 }
 
@@ -135,11 +121,11 @@ function prepararEdicion(item) {
   // limpiar inputs de archivo (por seguridad no se pueden pre-cargar)
   if (imagenInput) {
     imagenInput.value = '';
-    if (imgPreview) imgPreview.innerHTML = '';
+    document.getElementById('imgPreview').innerHTML = '';
   }
   if (videoInput) {
     videoInput.value = '';
-    if (vidPreview) vidPreview.innerHTML = '';
+    document.getElementById('vidPreview').innerHTML = '';
   }
 }
 
@@ -162,8 +148,8 @@ async function crearProducto(producto, cantidad) {
     cantidadInput.value = '';
     if (imagenInput) imagenInput.value = '';
     if (videoInput)  videoInput.value  = '';
-    if (imgPreview)  imgPreview.innerHTML = '';
-    if (vidPreview)  vidPreview.innerHTML = '';
+    document.getElementById('imgPreview').innerHTML = '';
+    document.getElementById('vidPreview').innerHTML = '';
 
     cargarLista();
   } catch (err) {
@@ -193,8 +179,8 @@ async function actualizarProducto(id, producto, cantidad) {
     cantidadInput.value = '';
     if (imagenInput) imagenInput.value = '';
     if (videoInput)  videoInput.value  = '';
-    if (imgPreview)  imgPreview.innerHTML = '';
-    if (vidPreview)  vidPreview.innerHTML = '';
+    document.getElementById('imgPreview').innerHTML = '';
+    document.getElementById('vidPreview').innerHTML = '';
 
     cargarLista();
   } catch (err) {
