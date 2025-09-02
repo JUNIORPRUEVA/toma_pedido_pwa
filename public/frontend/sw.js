@@ -1,4 +1,4 @@
-const CACHE_NAME = 'toma-pedido-cache-v5';
+const CACHE_NAME = 'toma-pedido-cache-v9';
 const URLS_TO_CACHE = [
   '/frontend/',
   '/frontend/index.html',
