@@ -62,7 +62,7 @@
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker
-            .register('/sw.js')
+            .register('sw.js') // <-- Cambia aquí: sin la barra inicial
             .then((reg) => console.log('SW OK', reg))
             .catch((err) => console.warn('SW FAIL', err));
         });
