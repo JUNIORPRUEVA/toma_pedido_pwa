@@ -1,4 +1,4 @@
-const CACHE_NAME = 'toma-pedido-cache-v1';
+const CACHE_NAME = 'toma-pedido-cache-v5';
 const URLS_TO_CACHE = [
   '/',
   '/index.html',
